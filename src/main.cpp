@@ -109,29 +109,40 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
   } else if(type == WS_EVT_DATA){
     AwsFrameInfo * info = (AwsFrameInfo*)arg;
     String msg = "";
-    if(info->final && info->index == 0 && info->len == len){
-      //the whole message is in a single frame and we got all of it's data
+    if(info->final && info->index == 0 && info->len == len){  //the whole message is in a single frame and we got all of it's data
       Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
+
+      if(info->opcode == WS_BINARY){
+          Serial.println("Binary Data received: ");
+ 
+          for(int i=0; i < info->len; i++) {        // print binary data file
+            Serial.printf("%X |", data[i]);         
+          }
+          Serial.println();
+
+          for(int i=0; i < info->len; i++) {        // print binary data as ASCII
+            Serial.printf("%c, ", data[i]);         // somehow the first "{" = 0x7B is not printed but its in binary file ????
+          }
+          Serial.println();
+          client->binary("I got your binary file");   // send message to client
+          // save file to LittleFS, this needs to be in subroutine in Fileserver.cpp and with posibility to edit the path
+          String filepath = "/";
+          filepath += "all_inSpace.json";
+          File myFile = LITTLEFS.open(filepath, "w");
+          myFile.write(data,info->len);
+          myFile.close();
+      }
 
       if(info->opcode == WS_TEXT){
         for(size_t i=0; i < info->len; i++) {
           msg += (char) data[i];
         }
-      } else {
-        char buff[3];
-        for(size_t i=0; i < info->len; i++) {
-          sprintf(buff, "%02x ", (uint8_t) data[i]);
-          msg += buff ;
-        }
+        Serial.printf("%s\n",msg.c_str());
+        parseJSONmsg(msg);                          // receive the websocket JSON string and parse it
+        client->text("I got your text message");    // send message to client
       }
-      Serial.printf("%s\n",msg.c_str());
-      parseJSONmsg(msg);   // receive the websocket JSON string and parse it
-      if(info->opcode == WS_TEXT)
-        client->text("I got your text message");
-      else
-        client->binary("I got your binary message");
-    } else {
-      //message is comprised of multiple frames or the frame is split into multiple packets
+      
+    } else {        //message is comprised of multiple frames or the frame is split into multiple packets
       if(info->index == 0){
         if(info->num == 0)
           Serial.printf("ws[%s][%u] %s-message start\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
@@ -144,26 +155,20 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
         for(size_t i=0; i < len; i++) {
           msg += (char) data[i];
         }
-      } else {
-        char buff[3];
-        for(size_t i=0; i < len; i++) {
-          sprintf(buff, "%02x ", (uint8_t) data[i]);
-          msg += buff ;
-        }
-      }
-      Serial.printf("%s\n",msg.c_str());
-
+        Serial.printf("%s\n",msg.c_str());
+      } 
+      
       if((info->index + len) == info->len){
         Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
         if(info->final){
           Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
           if(info->message_opcode == WS_TEXT)
-            client->text("I got your text message");
-          else
-            client->binary("I got your binary message");
+            client->text("I got your text message");              // we need to add what we do with this message
+          if(info->message_opcode == WS_BINARY)
+            client->binary("I got your binary message");          // we need to add what we do with this file
         }
-      }
-    }
+      } 
+    }  
   }
 }
 

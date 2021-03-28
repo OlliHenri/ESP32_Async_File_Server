@@ -145,6 +145,27 @@ const char index_html[] PROGMEM = R"rawliteral(
         addMessage("Event[ota]: " + e.data);
       }, false);
 
+      //add websocket file upload
+      $("#myUpload").click(function(){
+            var file = document.getElementById('filename').files[0];
+            ws.send('filename:'+file.name);
+            var reader = new FileReader();
+            var rawData = new ArrayBuffer();            
+            alert(file.name);
+
+            reader.loadend = function() {
+
+            }
+            reader.onload = function(e) {
+                rawData = e.target.result;
+                ws.send(rawData);
+                alert("the File has been transferred.")
+                ws.send('end');
+            }
+
+            reader.readAsArrayBuffer(file);
+			});
+
       // add a click button with response
       let button = document.querySelector("#upload-btn");
       button.addEventListener("click", function() {  
@@ -196,6 +217,11 @@ const char index_html[] PROGMEM = R"rawliteral(
     <br><button id="directory-btn">Click here for LittleFS directory</button><br>
     <br><button id="loadJson-btn">Click here to load JSON</button><br>
     <br><button id="websoc-btn">Click here to test websocket</button><br>
+    <br><form>
+		<input type="file" id="filename" />
+	  </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+    <br>
+    <input id="myUpload" type="button" value="Upload"  />press Upload to send file
 
     <div id="input_div">
       $<input type="text" value="" id="input_el">

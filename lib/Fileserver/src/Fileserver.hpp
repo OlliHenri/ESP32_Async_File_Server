@@ -25,6 +25,7 @@
 //functions
 void confirmRemove(void);
 void parseJSONmsg(const char *msg);
+void ws_handlePath(void);
 void handlePath(AsyncWebServerRequest *request);
 void ws_fileRemove(String removepath);
 void fileRemove(AsyncWebServerRequest *request);
@@ -43,7 +44,8 @@ const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-12">
+    <!-- <meta http-equiv="Content-type" content="text/html; charset=utf-12"> -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="/myjQuery/jquery-3.5.1.min.js"></script>
     <title>WebSocketTester</title>
@@ -51,14 +53,14 @@ const char index_html[] PROGMEM = R"rawliteral(
     body {
       margin:0;
       padding:0;
-      background-color: blue;
+      background-color: lightgray;
     }
 
     #dbg, #input_div, #input_el {
       font-family: monaco;
       font-size: 12px;
       line-height: 13px;
-      color: #AAA;
+      color: #000;
     }
 
     #dbg, #input_div {
@@ -128,6 +130,9 @@ const char index_html[] PROGMEM = R"rawliteral(
         }
       }
     }
+    function disconnect() {
+			ws.close();
+		}
     function startEvents(){
       var es = new EventSource('/events');
       es.onopen = function(e) {
@@ -145,10 +150,16 @@ const char index_html[] PROGMEM = R"rawliteral(
         addMessage("Event[ota]: " + e.data);
       }, false);
 
-      //add websocket file upload
+	    //set websocket filename and upload file
       $("#myUpload").click(function(){
-            var file = document.getElementById('filename').files[0];
-            ws.send('filename:'+file.name);
+      var file = document.getElementById('filename').files[0];
+			console.log("filename :" + file.name);
+			// set the filename json object		
+			var dataObj = {};
+			dataObj.task = file.name; 
+			dataObj.command = "setfilename";
+			ws.send(JSON.stringify(dataObj));					// send the filename via JSON
+
             var reader = new FileReader();
             var rawData = new ArrayBuffer();            
             alert(file.name);
@@ -158,13 +169,40 @@ const char index_html[] PROGMEM = R"rawliteral(
             }
             reader.onload = function(e) {
                 rawData = e.target.result;
-                ws.send(rawData);
+                ws.send(rawData);                                       // send second the file
                 alert("the File has been transferred.")
-                ws.send('end');
+                ws.send('end');                                         // send  last "end"
             }
 
             reader.readAsArrayBuffer(file);
 			});
+
+      // set LittleFS path on user request
+      $('#set-path-btn').click(function () {
+        //alert("set path clicked!");
+        var mypath = $("#mypath").val();		// get path from <input> value
+            // alert(mypath);
+        // set the path value		
+        var dataObj = {};
+        dataObj.task = mypath; //$("#mypath").val();
+        dataObj.command = "setpath";
+        ws.send(JSON.stringify(dataObj));					// send the path via JSON
+        localStorage.setItem("myKeypath", JSON.stringify(dataObj));	// store it for later
+        var obj = JSON.parse(localStorage.getItem("myKeypath"));	// access it later
+        // alert("I send upload path: " + obj);
+      });
+      // remove file
+        $('#remove-btn').click(function () {
+        // alert("remove btn clicked!");
+        var mypath = $("#remove_path").val();		// get path from <input> value
+        // alert(mypath);
+        // set the path value		
+        var dataObj = {};
+        dataObj.task = mypath; 						//$("#remove_path").val();
+        dataObj.command = "removefile";
+        ws.send(JSON.stringify(dataObj));	// send the path via JSON
+        //alert("I send remove path: ");
+      });
 
       // add a click button with response
       let button = document.querySelector("#upload-btn");
@@ -210,22 +248,45 @@ const char index_html[] PROGMEM = R"rawliteral(
     </script>
   </head>
   <body id="body" onload="onBodyLoad()">
-    <pre id="dbg"></pre>
+    <title>'LittleFS File Upload Page'</title>
+    <h3>Select File to Upload</h3>
 
     <br><button id="upload-btn">Click here for upload</button><br>
     <br><button id="register-btn">Click here for form</button><br>
     <br><button id="directory-btn">Click here for LittleFS directory</button><br>
     <br><button id="loadJson-btn">Click here to load JSON</button><br>
     <br><button id="websoc-btn">Click here to test websocket</button><br>
-    <br><form>
-		<input type="file" id="filename" />
-	  </form>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
     <br>
-    <input id="myUpload" type="button" value="Upload"  />press Upload to send file
 
+
+	<div class="myupload">
+		<> example: / = root   ;  /myfiles  = subdirectory 'myfiles'<br>
+    if the directory does not exist, it will be created</p>
+		<label for="path">type LITTLEFS path here:</label>
+		<input type="text" id="mypath" name="mypath" value="/"><br><br>
+		<a><button class="set-path-btn" id="set-path-btn">Set the LittleFS path</button></a>
+		<br>
+    <form action=''>
+      <input id='filename' type='file' name='myfile'>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<br><br>
+      <input id='myUpload' type='button' value='Upload'>press Upload to send file to ESP32
+    </form>
+	</div>
+  <div class="myremove">
+		<h3>Remove File</h3>
+		<label for="path">type path to remove file here:</label><br><br>
+		<input type="text" id="remove_path" name="remove_path" value="/"><br><br>
+		<a><button class="remove-btn" id="remove-btn">Remove File</button></a>			
+	</div>
+  <div class="myrename">
+				<h3>Rename File</h3>
+				<input type="text" id="rename_path" name="rename_path" value="/"><br><br>
+				<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
+	</div>
+    <br>
     <div id="input_div">
       $<input type="text" value="" id="input_el">
-    </div>
+    </div><br>
+    <pre id="dbg"></pre>
   </body>
 </html>
 )rawliteral";

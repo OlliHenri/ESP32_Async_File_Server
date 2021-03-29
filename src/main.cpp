@@ -41,6 +41,7 @@
 extern String webpage;
 extern String upload_path;
 extern String remove_path;
+extern String up_filename;
 extern String wsUri; 
 
 //functions declarations
@@ -125,9 +126,12 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
           }
           Serial.println();
           client->binary("I got your binary file");   // send message to client
-          // save file to LittleFS, this needs to be in subroutine in Fileserver.cpp and with posibility to edit the path
-          String filepath = "/";
-          filepath += "all_inSpace.json";
+          // ToDo save file to LittleFS, this needs to be in subroutine in Fileserver.cpp and with posibility to edit the path
+          String filepath = upload_path;
+          if(!(filepath == "/"))  {
+            filepath += "/";
+          }
+          filepath += up_filename;                  // ToDo create union in Fileserver.hpp and get rid of global arduino Strings maybe change to Std::Sting                 
           File myFile = LITTLEFS.open(filepath, "w");
           myFile.write(data,info->len);
           myFile.close();
@@ -163,9 +167,9 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
         if(info->final){
           Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
           if(info->message_opcode == WS_TEXT)
-            client->text("I got your text message");              // we need to add what we do with this message
+            client->text("I got your text message");              // ToDo we need to add what we do with this message
           if(info->message_opcode == WS_BINARY)
-            client->binary("I got your binary message");          // we need to add what we do with this file
+            client->binary("I got your binary message");          // ToDo we need to add what we do with this file
         }
       } 
     }  

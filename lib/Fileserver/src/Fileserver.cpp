@@ -1,5 +1,10 @@
 /*
     Fileserver LittleFS using ESP32 Asynchrone HTTP server with websockets and HTTP
+
+    Updated 20210328, JSON deseialization bug removed, check for containsKey()
+      JSON error handling improved
+    Updated 20210329, get upload filename by websocket and set uploadpath by websocket
+
 */
 
 #include <Fileserver.hpp>
@@ -11,6 +16,7 @@ extern AsyncWebSocket ws;
 String webpage;
 String upload_path = "/";
 String remove_path = "/";
+String up_filename = "";
 String wsUri = "";
 
 
@@ -59,9 +65,14 @@ void parseJSONmsg(const char *msg)  {
               const char* command = jobject["command"];       // command contains the option what to do
               Serial.print("deserialized json object is:");
               Serial.println(command); 
+              if (strcmp(command, "setfilename") == 0) {          // compare command to find what JSON we receive
+                up_filename = String(task);                   // set the Filesystem UPLOAD filename
+                Serial.print("upload filename is set: ");
+                Serial.println(up_filename);
+              }
               if (strcmp(command, "setpath") == 0) {          // compare command to find what JSON we receive
                 upload_path = String(task);                   // set the Filesystem UPLOAD path
-                Serial.println("upload path is set!");
+                ws_handlePath();                              // if path does not exist -> create it
               }
               // remove file command
               if (strcmp(command, "removefile") == 0) {       // compare command to find what JSON we receive       
@@ -88,6 +99,23 @@ void parseJSONmsg(const char *msg)  {
         Serial.println(F("Deserialization failed"));
         break;
   }  
+}
+
+void ws_handlePath(void)
+{
+  //Serial.println("handle websocket Path function");
+
+    Serial.print("handle websocket Path is: ");
+    Serial.println(upload_path);
+    if(!LITTLEFS.exists(upload_path))  {      // if path does not exist -> create it
+        Serial.println("mkdir bcs does not exists");
+        if(LITTLEFS.mkdir(upload_path)) {
+            Serial.println("mkdir success");
+        }else {
+            Serial.println("mkdir No success, Path is not set");
+        }
+    }
+
 }
 
 void handlePath(AsyncWebServerRequest *request)

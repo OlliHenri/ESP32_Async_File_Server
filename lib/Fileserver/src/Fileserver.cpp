@@ -35,45 +35,58 @@ void confirmRemove(void)  {
 }
 
 // handle JSON msg coming from client
-void parseJSONmsg(String msg)  {
+void parseJSONmsg(const char *msg)  {
 
   // Create an object and serialize it
   // allocate the memory for the document
   //const size_t CAPACITY = JSON_OBJECT_SIZE(1);
   StaticJsonDocument<1024> doc;
 
-  DeserializationError error = deserializeJson(doc, msg);
-      // Test if parsing succeeds.
-      if (error) {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(error.f_str());
-        return;
-      }
+  //char json[] = "{\"task\":\"/world\",\"command\":\"setpath\"}";  // {"task":"/world","command":"setpath"}
 
-  // extract the data
-  JsonObject jobject = doc.as<JsonObject>();
-  // parse Fileserver LITTLEFS upload path
-  const char* task = jobject["task"];         //deserialize json object, task defines the details
-  const char* command = jobject["command"];   // command contains the option what to do
-  Serial.print("deserialized json object is:");
-  Serial.println(task);
-  Serial.print("deserialized json object is:");
-  Serial.println(command);
-  if (strcmp(command, "setpath") == 0) {      // compare command to find what JSON we receive
-    upload_path = String(task);               // set the Filesystem UPLOAD path
-    Serial.println("upload path is set!");
-  }
-  // remove file command
-  if (strcmp(command, "removefile") == 0) {       // compare command to find what JSON we receive       
-    Serial.println("remove path is set!");
-    ws_fileRemove(String(task));                  // set the Filesystem remove path
-  }
-  // refresh directory file command
-  if (strcmp(command, "loaddir") == 0) {       // compare command to find what JSON we receive 
-    webpage = "";
-    printDirectory("/",5);                     // refresh the directory.json file
-    close_myJsondir();
-    Serial.println("refresh directory.json is called!");
+  DeserializationError error = deserializeJson(doc, msg); //msg
+    // handle potential deserialization errors
+    switch (error.code()) {
+    case DeserializationError::Ok:  {
+          Serial.println(F("Deserialization succeeded"));
+          // extract the data
+          JsonObject jobject = doc.as<JsonObject>();
+          // parse Fileserver LITTLEFS upload setpath, remove, refresh directory
+          if(doc.containsKey("task") && doc.containsKey("command"))  {
+              const char* task = jobject["task"];             //deserialize json object, task defines the details
+              Serial.print("deserialized json object is:");
+              Serial.println(task);
+              const char* command = jobject["command"];       // command contains the option what to do
+              Serial.print("deserialized json object is:");
+              Serial.println(command); 
+              if (strcmp(command, "setpath") == 0) {          // compare command to find what JSON we receive
+                upload_path = String(task);                   // set the Filesystem UPLOAD path
+                Serial.println("upload path is set!");
+              }
+              // remove file command
+              if (strcmp(command, "removefile") == 0) {       // compare command to find what JSON we receive       
+                Serial.println("remove path is set!");
+                ws_fileRemove(String(task));                  // set the Filesystem remove path
+              }
+              // refresh directory file command
+              if (strcmp(command, "loaddir") == 0) {          // compare command to find what JSON we receive 
+                webpage = "";
+                printDirectory("/",5);                     // refresh the directory.json file
+                close_myJsondir();
+                Serial.println("refresh directory.json is called!");
+              } 
+          } 
+        break;
+        }
+    case DeserializationError::InvalidInput:
+        Serial.println(F("Invalid input!"));
+        break;
+    case DeserializationError::NoMemory:
+        Serial.println(F("Not enough memory"));
+        break;
+    default:
+        Serial.println(F("Deserialization failed"));
+        break;
   }  
 }
 

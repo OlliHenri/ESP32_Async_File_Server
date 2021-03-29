@@ -24,7 +24,7 @@
 
 //functions
 void confirmRemove(void);
-void parseJSONmsg(String msg);
+void parseJSONmsg(const char *msg);
 void handlePath(AsyncWebServerRequest *request);
 void ws_fileRemove(String removepath);
 void fileRemove(AsyncWebServerRequest *request);
@@ -51,7 +51,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     body {
       margin:0;
       padding:0;
-      background-color: black;
+      background-color: blue;
     }
 
     #dbg, #input_div, #input_el {
@@ -69,11 +69,11 @@ const char index_html[] PROGMEM = R"rawliteral(
 
     #input_el {
       width:98%;
-      background-color: rgba(0,0,0,0);
+      background-color: rgba(255,255,255,255); /*<!--(0,0,0,0);-->*/
       border: 0px;
     }
     #input_el:focus {
-      outline: none;
+      outline-style: solid ; /*<!-- none; -->*/
     }
     </style>
     <script type="text/javascript">

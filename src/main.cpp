@@ -138,7 +138,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
           msg += (char) data[i];
         }
         Serial.printf("%s\n",msg.c_str());
-        parseJSONmsg(msg);                          // receive the websocket JSON string and parse it
+        parseJSONmsg(msg.c_str());                          // receive the websocket JSON string and parse it
         client->text("I got your text message");    // send message to client
       }
       

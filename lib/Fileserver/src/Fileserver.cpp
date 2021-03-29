@@ -16,32 +16,21 @@ extern AsyncWebSocket ws;
 String webpage;
 String upload_path = "/";
 String remove_path = "/";
+String renamepath = "/";
 String up_filename = "";
 String wsUri = "";
 
+void confirmRename(AsyncWebSocketClient * client)  {
+  client->text("I rensmrd file");  // ToDo place the rebaned filename in this text
+}
 
-void confirmRemove(void)  {
-  // Create an object and serialize it
-  // allocate the memory for the document
-  //const size_t CAPACITY = JSON_OBJECT_SIZE(1);
-  StaticJsonDocument<128> doc;
-  
-  JsonObject object = doc.to<JsonObject>();
-  object["command"] = "removefile";
-  object["task"] = "removed";
+void confirmRemove(AsyncWebSocketClient * client)  {
 
-  // serialize the object and send the result to Serial
-  Serial.print("serialized object:");
-  serializeJson(doc, Serial);
-  Serial.println("");
-  char   buffer[200]; // create temp buffer
-  size_t len = serializeJson(doc, buffer);  // serialize to buffer
-
-  ws.textAll(buffer, len); // send buffer to web socket
+  client->text("I removed file");  // ToDo place the removed filename in this text
 }
 
 // handle JSON msg coming from client
-void parseJSONmsg(const char *msg)  {
+void parseJSONmsg(const char *msg, AsyncWebSocketClient * client)  {
 
   // Create an object and serialize it
   // allocate the memory for the document
@@ -65,11 +54,13 @@ void parseJSONmsg(const char *msg)  {
               const char* command = jobject["command"];       // command contains the option what to do
               Serial.print("deserialized json object is:");
               Serial.println(command); 
+              // set upload file name
               if (strcmp(command, "setfilename") == 0) {          // compare command to find what JSON we receive
                 up_filename = String(task);                   // set the Filesystem UPLOAD filename
                 Serial.print("upload filename is set: ");
                 Serial.println(up_filename);
               }
+              // set upload path
               if (strcmp(command, "setpath") == 0) {          // compare command to find what JSON we receive
                 upload_path = String(task);                   // set the Filesystem UPLOAD path
                 ws_handlePath();                              // if path does not exist -> create it
@@ -77,12 +68,22 @@ void parseJSONmsg(const char *msg)  {
               // remove file command
               if (strcmp(command, "removefile") == 0) {       // compare command to find what JSON we receive       
                 Serial.println("remove path is set!");
-                ws_fileRemove(String(task));                  // set the Filesystem remove path
+                ws_fileRemove(String(task), client);                  // set the Filesystem remove path
+              }
+              // rename file command
+              if (strcmp(command, "renamefile") == 0) {       // compare command to find what JSON we receive       
+                renamepath = task;
+                //ws_fileRename(String(task), String renamepathTo);   // set the Filesystem rename options
+                Serial.println("rename path is set!");
+              }
+              if (strcmp(command, "renamefileTo") == 0) {       // compare command to find what JSON we receive     
+                ws_fileRename(renamepath, String (task), client);       // set the Filesystem renameTo options
+                Serial.println("rename pathTo is set!");
               }
               // refresh directory file command
               if (strcmp(command, "loaddir") == 0) {          // compare command to find what JSON we receive 
                 webpage = "";
-                printDirectory("/",5);                     // refresh the directory.json file
+                printDirectory("/",5);                        // refresh the directory.json file
                 close_myJsondir();
                 Serial.println("refresh directory.json is called!");
               } 
@@ -115,7 +116,6 @@ void ws_handlePath(void)
             Serial.println("mkdir No success, Path is not set");
         }
     }
-
 }
 
 void handlePath(AsyncWebServerRequest *request)
@@ -149,7 +149,7 @@ void handlePath(AsyncWebServerRequest *request)
   }
 }
 
-void ws_fileRemove(String removepath)  {
+void ws_fileRemove(String removepath, AsyncWebSocketClient * client)  {
     if(!LITTLEFS.exists(removepath))  {            // if path does not exist -> return
         Serial.println("path/file does not exist!");
         return;
@@ -168,7 +168,7 @@ void ws_fileRemove(String removepath)  {
         Serial.println("file deleted");
       }
       file.close();
-      confirmRemove();
+      confirmRemove(client);
 }
 
 void fileRemove(AsyncWebServerRequest *request)  {
@@ -230,6 +230,21 @@ void fileRemove(AsyncWebServerRequest *request)  {
   {
     request->send(500, "text/plain", "Missing parameters");
   }   
+}
+
+// rename a file
+void ws_fileRename(String renamepath, String renamepathTo, AsyncWebSocketClient * client)  {
+    if(!LITTLEFS.exists(renamepath))  {            // if path does not exist -> return
+        Serial.println("rename path/file does not exist!");
+        return;
+    }
+    //File file = LITTLEFS.open(renamepath, FILE_WRITE);
+    Serial.println("rename file");
+    //file.close();
+    LITTLEFS.rename(renamepath, renamepathTo);     // rename file
+
+    //file.close();
+    confirmRename(client);
 }
 
 void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {

@@ -23,12 +23,14 @@
 //String wsUri = "";
 
 //functions
-void confirmRemove(void);
-void parseJSONmsg(const char *msg);
+void confirmRemove(AsyncWebSocketClient * client);
+void parseJSONmsg(const char *msg, AsyncWebSocketClient * client);
 void ws_handlePath(void);
 void handlePath(AsyncWebServerRequest *request);
-void ws_fileRemove(String removepath);
+void ws_fileRemove(String removepath,AsyncWebSocketClient * client);
 void fileRemove(AsyncWebServerRequest *request);
+void ws_fileRename(String renamepath, String renamepathTo,AsyncWebSocketClient * client);
+void confirmRename(AsyncWebSocketClient * client);
 void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
 void printDirectory(const char * dirname, uint8_t levels);
@@ -51,7 +53,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     <title>WebSocketTester</title>
     <style type="text/css" media="screen">
     body {
-      margin:0;
+      margin: 40px;
       padding:0;
       background-color: lightgray;
     }
@@ -162,7 +164,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
             var reader = new FileReader();
             var rawData = new ArrayBuffer();            
-            alert(file.name);
+            //alert(file.name);
 
             reader.loadend = function() {
 
@@ -170,7 +172,7 @@ const char index_html[] PROGMEM = R"rawliteral(
             reader.onload = function(e) {
                 rawData = e.target.result;
                 ws.send(rawData);                                       // send second the file
-                alert("the File has been transferred.")
+                //alert("the File has been transferred.")
                 ws.send('end');                                         // send  last "end"
             }
 
@@ -191,17 +193,39 @@ const char index_html[] PROGMEM = R"rawliteral(
         var obj = JSON.parse(localStorage.getItem("myKeypath"));	// access it later
         // alert("I send upload path: " + obj);
       });
+
       // remove file
-        $('#remove-btn').click(function () {
-        // alert("remove btn clicked!");
-        var mypath = $("#remove_path").val();		// get path from <input> value
-        // alert(mypath);
-        // set the path value		
-        var dataObj = {};
-        dataObj.task = mypath; 						//$("#remove_path").val();
-        dataObj.command = "removefile";
-        ws.send(JSON.stringify(dataObj));	// send the path via JSON
-        //alert("I send remove path: ");
+      $('#remove-btn').click(function () {
+      console.log("remove btn clicked!");
+      var mypath = $("#remove_path").val();		// get path from <input> value
+      console.log("removepath :" + mypath);
+      // set the path value		
+      var dataObj = {};
+      dataObj.task = mypath; 						//$("#remove_path").val();
+      dataObj.command = "removefile";
+      ws.send(JSON.stringify(dataObj));	// send the path via JSON
+      console.log("I send remove path: ");
+      });
+
+      // rename file
+      $('#rename-btn').click(function () {
+      console.log("rename btn clicked!");
+      var mypath = $("#rename_path").val();		// get path from <input> value
+      console.log("rename path:" + mypath);
+      // set the path value		
+      var dataObj = {};
+      dataObj.task = mypath; 					
+      dataObj.command = "renamefile";
+      ws.send(JSON.stringify(dataObj));	// send the path via JSON
+      console.log("rename JSON: " + JSON.stringify(dataObj));
+      mypath = $("#rename_pathTo").val();		// get pathTo from <input> value
+      console.log("rename pathTo:" + mypath);
+      // set the path value		
+      var dataObj = {};
+      dataObj.task = mypath; 						
+      dataObj.command = "renamefileTo";
+      ws.send(JSON.stringify(dataObj));	// send the pathTo via JSON
+      console.log("rename JSON To: " + JSON.stringify(dataObj));
       });
 
       // add a click button with response
@@ -248,19 +272,20 @@ const char index_html[] PROGMEM = R"rawliteral(
     </script>
   </head>
   <body id="body" onload="onBodyLoad()">
-    <title>'LittleFS File Upload Page'</title>
-    <h3>Select File to Upload</h3>
+    <h3>LittleFS FileServer</h3>
+    
 
-    <br><button id="upload-btn">Click here for upload</button><br>
+        <button id="upload-btn">Click here for upload</button><br>
     <br><button id="register-btn">Click here for form</button><br>
     <br><button id="directory-btn">Click here for LittleFS directory</button><br>
     <br><button id="loadJson-btn">Click here to load JSON</button><br>
     <br><button id="websoc-btn">Click here to test websocket</button><br>
     <br>
 
-
+  <h3>Select File to Upload</h3>
 	<div class="myupload">
-		<> example: / = root   ;  /myfiles  = subdirectory 'myfiles'<br>
+		example: / = root   ;  /myfiles  = subdirectory 'myfiles'<br>
+    example path:  /myfiles/file.txt<br>
     if the directory does not exist, it will be created</p>
 		<label for="path">type LITTLEFS path here:</label>
 		<input type="text" id="mypath" name="mypath" value="/"><br><br>
@@ -273,19 +298,25 @@ const char index_html[] PROGMEM = R"rawliteral(
 	</div>
   <div class="myremove">
 		<h3>Remove File</h3>
-		<label for="path">type path to remove file here:</label><br><br>
+		<label for="path">type path to remove file here:<br>
+    when the last file of a directory is removed<br>
+    the directory itself will be also removed</label><br>
 		<input type="text" id="remove_path" name="remove_path" value="/"><br><br>
 		<a><button class="remove-btn" id="remove-btn">Remove File</button></a>			
 	</div>
   <div class="myrename">
 				<h3>Rename File</h3>
-				<input type="text" id="rename_path" name="rename_path" value="/"><br><br>
+        Select path and file to be renamed, example: /subdirectory/file.txt<br>
+        <input type="text" id="rename_path" name="rename_path" value="/"><br>
+        insert path and renamed filename, example: /subdirectory/newfile.txt<br>
+				<input type="text" id="rename_pathTo" name="rename_pathTo" value="/"><br><br>
 				<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
 	</div>
     <br>
     <div id="input_div">
       $<input type="text" value="" id="input_el">
     </div><br>
+    Debug logging:
     <pre id="dbg"></pre>
   </body>
 </html>

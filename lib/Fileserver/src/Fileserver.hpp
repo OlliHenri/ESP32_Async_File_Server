@@ -16,12 +16,6 @@
 #include <LITTLEFS.h>
 #include <AsyncUDP.h>
 
-//AsyncWebSocket ws("/ws");
-//String webpage;
-//String upload_path;
-//String remove_path;
-//String wsUri = "";
-
 //functions
 void confirmRemove(AsyncWebSocketClient * client);
 void parseJSONmsg(const char *msg, AsyncWebSocketClient * client);
@@ -80,6 +74,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       outline-style: solid ; /*<!-- none; -->*/
     }
     </style>
+
     <script type="text/javascript">
     var ws = null;
     function ge(s){ return document.getElementById(s);}
@@ -90,12 +85,14 @@ const char index_html[] PROGMEM = R"rawliteral(
       for (var i = 0; i < str.length; ++i) buf[i] = str.charCodeAt(i);
       ws.send(buf);
     }
+
     function addMessage(m){
       var msg = ce("div");
       msg.innerText = m;
       ge("dbg").appendChild(msg);
       stb();
     }
+
     function startSocket(){
       ws = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
       console.log("ws ist gleich:");
@@ -132,9 +129,11 @@ const char index_html[] PROGMEM = R"rawliteral(
         }
       }
     }
+
     function disconnect() {
 			ws.close();
 		}
+
     function startEvents(){
       var es = new EventSource('/events');
       es.onopen = function(e) {
@@ -162,21 +161,18 @@ const char index_html[] PROGMEM = R"rawliteral(
 			dataObj.command = "setfilename";
 			ws.send(JSON.stringify(dataObj));					// send the filename via JSON
 
-            var reader = new FileReader();
-            var rawData = new ArrayBuffer();            
-            //alert(file.name);
+        var reader = new FileReader();
+        var rawData = new ArrayBuffer();            
 
-            reader.loadend = function() {
-
-            }
-            reader.onload = function(e) {
-                rawData = e.target.result;
-                ws.send(rawData);                                       // send second the file
-                //alert("the File has been transferred.")
-                ws.send('end');                                         // send  last "end"
-            }
-
-            reader.readAsArrayBuffer(file);
+        reader.loadend = function() {
+        }
+        reader.onload = function(e) {
+            rawData = e.target.result;
+            ws.send(rawData);                                       // send second the file
+            //alert("the File has been transferred.")
+            ws.send('end');                                         // send  last "end"
+        }
+        reader.readAsArrayBuffer(file);
 			});
 
       // set LittleFS path on user request
@@ -207,6 +203,12 @@ const char index_html[] PROGMEM = R"rawliteral(
       console.log("I send remove path: ");
       });
 
+      // file rename_pathTo automaticaly
+      var $my_rename = $("#rename_pathTo");
+      $("#rename_path").keyup(function() {
+      $my_rename.val( this.value );
+      });
+
       // rename file
       $('#rename-btn').click(function () {
       console.log("rename btn clicked!");
@@ -230,36 +232,31 @@ const char index_html[] PROGMEM = R"rawliteral(
 
       // add a click button with response
       let button = document.querySelector("#upload-btn");
-      button.addEventListener("click", function() {  
-          //alert("upload button clicked");  
+      button.addEventListener("click", function() {   
           console.log("User has clicked on the upload button!");
           window.location.href="/my_upload";
       });
       // add a 2nd click button with response
       let button2 = document.querySelector("#register-btn");
-      button2.addEventListener("click", function() {  
-          //alert("register form button2 clicked");  
+      button2.addEventListener("click", function() {   
           console.log("User has clicked on the button2 !");
           window.location.href="/register";
       });
       // add a 3nd click button with response
       let button3 = document.querySelector("#directory-btn");
-      button3.addEventListener("click", function() {  
-          //alert("directory button3 clicked");  
+      button3.addEventListener("click", function() {    
           console.log("User has clicked on the directory button3 !");
           window.location.href="/list_directory";
       });
       // add a 4th click button with response
       let button4 = document.querySelector("#loadJson-btn");
-      button4.addEventListener("click", function() {  
-          //alert("loadJson button4 clicked");  
+      button4.addEventListener("click", function() {    
           console.log("User has clicked on the loadJson button4, will load JSON from server !");
           window.location.href="/loadJSON";
       });
       // add a 5th click button with response
       let button5 = document.querySelector("#websoc-btn");
-      button5.addEventListener("click", function() {  
-          //alert("loadJson button4 clicked");  
+      button5.addEventListener("click", function() {    
           console.log("User has clicked on the loadJson button5, will test websocket");
           window.location.href="/websoctest1.htm";
       });
@@ -308,7 +305,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 				<h3>Rename File</h3>
         Select path and file to be renamed, example: /subdirectory/file.txt<br>
         <input type="text" id="rename_path" name="rename_path" value="/"><br>
-        insert path and renamed filename, example: /subdirectory/newfile.txt<br>
+        Insert path and renamed filename, example: /subdirectory/newfile.txt<br>
 				<input type="text" id="rename_pathTo" name="rename_pathTo" value="/"><br><br>
 				<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
 	</div>

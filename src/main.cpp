@@ -223,8 +223,6 @@ void setup(){
 
   MDNS.addService("http","tcp",80);
 
-  //LITTLEFS.begin();
-
    if(!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
         Serial.println("LITTLEFS Mount Failed");
         return;
@@ -240,10 +238,8 @@ void setup(){
   });
   server.addHandler(&events);
 
-
   server.addHandler(new LITTLEFSEditor(LITTLEFS, http_username, http_password));
 
-  
   server.on("/heap", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(ESP.getFreeHeap()));
   });

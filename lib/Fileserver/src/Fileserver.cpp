@@ -20,18 +20,18 @@ String renamepath = "/";
 String up_filename = "";
 String wsUri = "";
 
+// confirm file renamed
 void confirmRename(AsyncWebSocketClient * client)  {
   client->text("I rensmrd file");  // ToDo place the rebaned filename in this text
 }
 
+// confirm file removed
 void confirmRemove(AsyncWebSocketClient * client)  {
-
   client->text("I removed file");  // ToDo place the removed filename in this text
 }
 
 // handle JSON msg coming from client
 void parseJSONmsg(const char *msg, AsyncWebSocketClient * client)  {
-
   // Create an object and serialize it
   // allocate the memory for the document
   //const size_t CAPACITY = JSON_OBJECT_SIZE(1);
@@ -80,7 +80,7 @@ void parseJSONmsg(const char *msg, AsyncWebSocketClient * client)  {
                 ws_fileRename(renamepath, String (task), client);       // set the Filesystem renameTo options
                 Serial.println("rename pathTo is set!");
               }
-              // refresh directory file command
+              // refresh directory json file in the LittleFS flash
               if (strcmp(command, "loaddir") == 0) {          // compare command to find what JSON we receive 
                 webpage = "";
                 printDirectory("/",5);                        // refresh the directory.json file
@@ -102,10 +102,9 @@ void parseJSONmsg(const char *msg, AsyncWebSocketClient * client)  {
   }  
 }
 
+// handle websocket file / directory Path function
 void ws_handlePath(void)
 {
-  //Serial.println("handle websocket Path function");
-
     Serial.print("handle websocket Path is: ");
     Serial.println(upload_path);
     if(!LITTLEFS.exists(upload_path))  {      // if path does not exist -> create it
@@ -118,6 +117,7 @@ void ws_handlePath(void)
     }
 }
 
+// old version no websocket
 void handlePath(AsyncWebServerRequest *request)
 {
   //List all parameters (Compatibility)
@@ -171,6 +171,7 @@ void ws_fileRemove(String removepath, AsyncWebSocketClient * client)  {
       confirmRemove(client);
 }
 
+// old version no websocket
 void fileRemove(AsyncWebServerRequest *request)  {
   webpage = "";
 
@@ -193,11 +194,6 @@ void fileRemove(AsyncWebServerRequest *request)  {
     }
     File file = LITTLEFS.open(remove_path, "w");
     Serial.println(" opened remove_path ");
-/*
-      if(!file){
-        Serial.println("is not root");
-        return;
-      }  */
 
       if(file.isDirectory()){
         Serial.println(String(file.isDirectory()?"Dir ":"File ")+String(file.name()));
@@ -247,6 +243,7 @@ void ws_fileRename(String renamepath, String renamepathTo, AsyncWebSocketClient 
     confirmRename(client);
 }
 
+// old version no websocket
 void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   String filepath;
 
@@ -326,7 +323,6 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 
 
 void printDirectory(const char * dirname, uint8_t levels){
-  
   File root = LITTLEFS.open(dirname);
   
   if(!root){

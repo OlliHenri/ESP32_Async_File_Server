@@ -147,10 +147,14 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
       }
       
     } else {        //message is comprised of multiple frames or the frame is split into multiple packets
+
       if(info->index == 0){
         if(info->num == 0)
           Serial.printf("ws[%s][%u] %s-message start\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
         Serial.printf("ws[%s][%u] frame[%u] start[%llu]\n", server->url(), client->id(), info->num, info->len);
+        if(info->opcode == WS_BINARY){      // save start frame
+             ws_handleUpload(info, data);
+        }
       }
 
       Serial.printf("ws[%s][%u] frame[%u] %s[%llu - %llu]: ", server->url(), client->id(), info->num, (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
@@ -161,9 +165,15 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
         }
         Serial.printf("%s\n",msg.c_str());
       } 
+      if(info->opcode == WS_BINARY){      // save center frames
+          ws_handleUpload(info, data);
+      }
       
       if((info->index + len) == info->len){
         Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
+        if(info->opcode == WS_BINARY){      // save last frame
+        ws_handleUpload(info, data);
+      }
         if(info->final){
           Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
           if(info->message_opcode == WS_TEXT)
@@ -281,7 +291,7 @@ void setup(){
       request->send(response);
   });
 
- 
+ // this comment can be deleted later its only a test for the new branch
   server.serveStatic("/directory.json", LITTLEFS, "/directory.json");
 
   server.serveStatic("/loadJson2Style.css", LITTLEFS, "/loadJson2Style.css");

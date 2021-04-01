@@ -29,6 +29,7 @@ void handleUpload(AsyncWebServerRequest *request, String filename, size_t index,
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
 void printDirectory(const char * dirname, uint8_t levels);
 void close_myJsondir(void);
+void ws_handleUpload( AwsFrameInfo * info, uint8_t *data);
 
 void File_Upload(void);
 void File_Header(void);
@@ -44,36 +45,8 @@ const char index_html[] PROGMEM = R"rawliteral(
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="/myjQuery/jquery-3.5.1.min.js"></script>
+	<link href="/loadJson2Style.css" rel="stylesheet">
     <title>WebSocketTester</title>
-    <style type="text/css" media="screen">
-    body {
-      margin: 40px;
-      padding:0;
-      background-color: lightgray;
-    }
-
-    #dbg, #input_div, #input_el {
-      font-family: monaco;
-      font-size: 12px;
-      line-height: 13px;
-      color: #000;
-    }
-
-    #dbg, #input_div {
-      margin:0;
-      padding:0;
-      padding-left:4px;
-    }
-
-    #input_el {
-      width:98%;
-      background-color: rgba(255,255,255,255); /*<!--(0,0,0,0);-->*/
-      border: 0px;
-    }
-    #input_el:focus {
-      outline-style: solid ; /*<!-- none; -->*/
-    }
-    </style>
 
     <script type="text/javascript">
     var ws = null;
@@ -230,91 +203,137 @@ const char index_html[] PROGMEM = R"rawliteral(
       console.log("rename JSON To: " + JSON.stringify(dataObj));
       });
 
-      // add a click button with response
+      function refreshDir() {
+				var dataObj = {};
+				dataObj.task = "refresh"; 
+				dataObj.command = "loaddir";
+				ws.send(JSON.stringify(dataObj));			// send the command to refresh directory via JSON
+			};
+
+ /*     // add a click button with response
       let button = document.querySelector("#upload-btn");
       button.addEventListener("click", function() {   
           console.log("User has clicked on the upload button!");
           window.location.href="/my_upload";
-      });
-      // add a 2nd click button with response
-      let button2 = document.querySelector("#register-btn");
-      button2.addEventListener("click", function() {   
-          console.log("User has clicked on the button2 !");
-          window.location.href="/register";
-      });
-      // add a 3nd click button with response
-      let button3 = document.querySelector("#directory-btn");
-      button3.addEventListener("click", function() {    
-          console.log("User has clicked on the directory button3 !");
-          window.location.href="/list_directory";
-      });
-      // add a 4th click button with response
-      let button4 = document.querySelector("#loadJson-btn");
-      button4.addEventListener("click", function() {    
-          console.log("User has clicked on the loadJson button4, will load JSON from server !");
-          window.location.href="/loadJSON";
-      });
-      // add a 5th click button with response
-      let button5 = document.querySelector("#websoc-btn");
-      button5.addEventListener("click", function() {    
-          console.log("User has clicked on the loadJson button5, will test websocket");
-          window.location.href="/websoctest1.htm";
-      });
+      });  */
+
+	  // list dirctory on user request
+	  $('#get-dir-btn').click(function () {
+		//alert("get directory clicked!");		
+		refreshDir();
+		$.getJSON('directory.json', function (data) {
+		//console.log(data);
+			$.each(data, function (key, value) {
+				if (key === 'directory') {
+					$('#directory').empty();
+					for (var i = 0; i < value.length; i++) {
+						var option = ('<li>' + value[i] + '</li>');
+						$('#directory').append(option);
+					}
+				}
+			});
+		//alert("show data JSON!");
+		});
+	  });
+
+	  // document ready function
+		$(document).ready(function () {	
+			// refresh dirctory when page is ready 
+			function refreshDir() {
+				var dataObj = {};
+				dataObj.task = "refresh"; 
+				dataObj.command = "loaddir";
+				ws.send(JSON.stringify(dataObj));			// send the command to refresh directory via JSON
+			};
+			
+			
+			// get JSON file with directory from LittleFS flash into flexbox
+			$.getJSON('directory.json', function (data) {
+			  console.log(data);
+				$.each(data, function (key, value) {
+					if (key === 'directory') {
+						$('#directory').empty();
+						for (var i = 0; i < value.length; i++) {
+							var option = ('<li>' + value[i] + '</li>');
+							$('#directory').append(option);
+						}
+					}
+				});
+			});
+				
+		});
     }
+	
+
+
     function onBodyLoad(){
       startSocket();
       startEvents();
     }
 
-    </script>
+  </script>
   </head>
   <body id="body" onload="onBodyLoad()">
     <h3>LittleFS FileServer</h3>
     
-
-        <button id="upload-btn">Click here for upload</button><br>
-    <br><button id="register-btn">Click here for form</button><br>
-    <br><button id="directory-btn">Click here for LittleFS directory</button><br>
-    <br><button id="loadJson-btn">Click here to load JSON</button><br>
-    <br><button id="websoc-btn">Click here to test websocket</button><br>
-    <br>
-
-  <h3>Select File to Upload</h3>
-	<div class="myupload">
-		example: / = root   ;  /myfiles  = subdirectory 'myfiles'<br>
-    example path:  /myfiles/file.txt<br>
-    if the directory does not exist, it will be created</p>
+	   <div>
+		<div class="flexbox-container">
+		  <div class="flexbox-item flexbox-item-1">flexbox-item-1
+			<div class="message">
+			  <h3>File Directory of ESP32 LITTLEFS</h3>
+			  <div class="list_dir">
+				<div><ul id="directory"></ul></div><br><br>
+			  </div>
+			  <div class="refreshtext">
+				refresh the directory here<br><br><br>
+			  </div>          
+			   <div class="mybutton"> 
+				<a><button class="get-dir-btn" id="get-dir-btn">refresh dir here</button></a>
+			  </div>
+			</div>
+			<br>
+		 </div>
+		 <div class="flexbox-item flexbox-item-2">flexbox-item-2<br>
+		    
+		<h3>Select File to Upload</h3>
+		<div class="myupload">
+	    example: / = root   ;  /myfiles  = subdirectory 'myfiles'<br>
+		example path:  /myfiles/file.txt<br>
+		if the directory does not exist, it will be created</p>
 		<label for="path">type LITTLEFS path here:</label>
 		<input type="text" id="mypath" name="mypath" value="/"><br><br>
 		<a><button class="set-path-btn" id="set-path-btn">Set the LittleFS path</button></a>
 		<br>
-    <form action=''>
-      <input id='filename' type='file' name='myfile'>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<br><br>
-      <input id='myUpload' type='button' value='Upload'>press Upload to send file to ESP32
-    </form>
+			<form action=''>
+			  <input id='filename' type='file' name='myfile'>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<br><br>
+			  <input id='myUpload' type='button' value='Upload'>press Upload to send file to ESP32
+			</form>
+			</div>
+		  <div class="myremove">
+				<h3>Remove File</h3>
+				<label for="path">type path to remove file here:<br>
+			when the last file of a directory is removed<br>
+			the directory itself will be also removed</label><br>
+				<input type="text" id="remove_path" name="remove_path" value="/"><br><br>
+				<a><button class="remove-btn" id="remove-btn">Remove File</button></a>			
+			</div>
+		  <div class="myrename">
+						<h3>Rename File</h3>
+				Select path and file to be renamed, example: /subdirectory/file.txt<br>
+				<input type="text" id="rename_path" name="rename_path" value="/"><br>
+				Insert path and renamed filename, example: /subdirectory/newfile.txt<br>
+						<input type="text" id="rename_pathTo" name="rename_pathTo" value="/"><br><br>
+						<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
+			</div>
+			<br>
+			<div id="input_div">
+			  $<input type="text" value="" id="input_el">
+			</div><br>
+			Debug logging:
+			<pre id="dbg"></pre>
+	  </div>
+     </div>
 	</div>
-  <div class="myremove">
-		<h3>Remove File</h3>
-		<label for="path">type path to remove file here:<br>
-    when the last file of a directory is removed<br>
-    the directory itself will be also removed</label><br>
-		<input type="text" id="remove_path" name="remove_path" value="/"><br><br>
-		<a><button class="remove-btn" id="remove-btn">Remove File</button></a>			
-	</div>
-  <div class="myrename">
-				<h3>Rename File</h3>
-        Select path and file to be renamed, example: /subdirectory/file.txt<br>
-        <input type="text" id="rename_path" name="rename_path" value="/"><br>
-        Insert path and renamed filename, example: /subdirectory/newfile.txt<br>
-				<input type="text" id="rename_pathTo" name="rename_pathTo" value="/"><br><br>
-				<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
-	</div>
-    <br>
-    <div id="input_div">
-      $<input type="text" value="" id="input_el">
-    </div><br>
-    Debug logging:
-    <pre id="dbg"></pre>
   </body>
 </html>
 )rawliteral";

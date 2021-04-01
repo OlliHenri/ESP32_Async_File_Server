@@ -243,6 +243,36 @@ void ws_fileRename(String renamepath, String renamepathTo, AsyncWebSocketClient 
     confirmRename(client);
 }
 
+// handle websocket upload
+void ws_handleUpload( AwsFrameInfo * info, uint8_t *data) {
+  String filepath;
+  static  File myFile;
+  static uint8_t frame = 0;     // this frame counter will only work with first file.. needs to be reset
+
+  Serial.println((String)"UploadStart: " + up_filename);
+  Serial.printf(" frame : %d ", frame);
+  // open the file on first call and store the file handle in the request object
+  filepath = upload_path;
+  if(!(filepath == "/"))  {
+     filepath += "/";
+  }
+  filepath += up_filename; 
+  Serial.println((String)"Uploadpath: " + filepath);
+  
+  if(!info->index){
+     myFile = LITTLEFS.open(filepath, "w");    
+  }
+  if(info->len) {
+    // stream the incoming chunk to the opened file
+    myFile.write(data,info->len);
+  }
+  if(info->final){
+    Serial.println((String) "UploadEnd: " + filepath );
+    // close the file handle as the upload is now done
+    myFile.close();
+  }
+}
+
 // old version no websocket
 void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   String filepath;

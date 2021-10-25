@@ -1,0 +1,15 @@
+�[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 0 - WIFI_READY
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 2 - STA_START
+Connecting to WiFi..
+Connecting to WiFi..
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 4 - STA_CONNECTED
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 7 - STA_GOT_IP
+[D][WiFiGeneric.cpp:419] _eventCallback(): STA IP: 192.168.86.150, MASK: 255.255.255.0, GW: 192.168.86.1
+Connecting to WiFi..
+192.168.86.150
+[I][ArduinoOTA.cpp:141] begin(): OTA server at: esp-async.local:3232
+LITTLEFS Mounted please send files
+0 01:00:05
+WiFi is connected. Free heap: 2394681 01:00:10
+WiFi is connected. Free heap: 2400362 01:00:15
+WiFi is connected. Free heap: 239760

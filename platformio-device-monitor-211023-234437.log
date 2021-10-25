@@ -1,0 +1,261 @@
+et[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 0 - WIFI_READY
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 2 - STA_START
+Connecting to WiFi..
+Connecting to WiFi..
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 4 - STA_CONNECTED
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 7 - STA_GOT_IP
+[D][WiFiGeneric.cpp:419] _eventCallback(): STA IP: 192.168.86.150, MASK: 255.255.255.0, GW: 192.168.86.1
+Connecting to WiFi..
+192.168.86.150
+[I][ArduinoOTA.cpp:141] begin(): OTA server at: esp-async.local:3232
+LITTLEFS Mounted please send files
+0 01:00:05
+WiFi is connected. Free heap: 2394601 01:00:10
+WiFi is connected. Free heap: 2387402 01:00:15
+WiFi is connected. Free heap: 238868[W][AsyncTCP.cpp:930] _poll(): pcb is NULL
+ws[/ws][1] connect
+ws[/ws][1] pong[0]: 
+3 01:00:20
+WiFi is connected. Free heap: 2375684 01:00:25
+WiFi is connected. Free heap: 2377005 01:00:30
+WiFi is connected. Free heap: 237052ws[/ws][1] text-message[32]: {"task":"/","command":"setpath"}
+Deserialization succeeded
+deserialized json object is:/
+deserialized json object is:setpath
+handle websocket Path is: /
+6 01:00:35
+WiFi is connected. Free heap: 2370527 01:00:40
+WiFi is connected. Free heap: 2371888 01:00:45
+WiFi is connected. Free heap: 2371889 01:00:50
+WiFi is connected. Free heap: 237188ws[/ws][1] text-message[38]: {"task":"refresh","command":"loaddir"}
+Deserialization succeeded
+deserialized json object is:refresh
+deserialized json object is:loaddir
+File /.exclude.files	25 B
+File /ace.js.gz	96.624 KB
+File /all_in_space.json	612 B
+File /directory.json	1.144 KB
+File /example1.json	1.148 KB
+File /ext-searchbox.js.gz	3.058 KB
+File /favicon.ico	1.123 KB
+File /form.html	8.438 KB
+File /index.htm	3.789 KB
+File /loadJSON2.html	8.032 KB
+File /loadJson2Style.css	1.856 KB
+File /mode-css.js.gz	5.959 KB
+File /mode-html.js.gz	16.638 KB
+File /mode-javascript.js.gz	6.167 KB
+Dir /myjQuery
+File /myjQuery/jquery-3.5.1.min.js	87.379 KB
+File /websoctest1.htm	2.353 KB
+File /websoctest2.htm	4.111 KB
+File /worker-html.js.gz	48.852 KB
+File system info.
+Total space: 1507328 byte
+Total space used: 364544 byte
+Total free space: 1142784 byte
+{"directory":["File /.exclude.files Filesize 25 B","File /ace.js.gz Filesize 96.624 KB","File /all_in_space.json Filesize 612 B","File /directory.json Filesize 1.144 KB","File /example1.json Filesize 1.148 KB","File /ext-searchbox.js.gz Filesize 3.058 KB","File /favicon.ico Filesize 1.123 KB","File /form.html Filesize 8.438 KB","File /index.htm Filesize 3.789 KB","File /loadJSON2.html Filesize 8.032 KB","File /loadJson2Style.css Filesize 1.856 KB","File /mode-css.js.gz Filesize 5.959 KB","File /mode-html.js.gz Filesize 16.638 KB","File /mode-javascript.js.gz Filesize 6.167 KB","Dir /myjQuery","File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB","File /websoctest1.htm Filesize 2.353 KB","File /websoctest2.htm Filesize 4.111 KB","File /worker-html.js.gz Filesize 48.852 KB","Total space= 1507328 byte","Total space used= 364544 byte","Total free space= 1142784 byte"]}
+refresh directory.json is called!
+10 01:00:55
+WiFi is connected. Free heap: 234624ws[/ws][1] text-message[38]: {"task":"refresh","command":"loaddir"}
+Deserialization succeeded
+deserialized json object is:refresh
+deserialized json object is:loaddir
+File /.exclude.files	25 B
+File /ace.js.gz	96.624 KB
+File /all_in_space.json	612 B
+File /directory.json	879 B
+File /example1.json	1.148 KB
+File /ext-searchbox.js.gz	3.058 KB
+File /favicon.ico	1.123 KB
+File /form.html	8.438 KB
+File /index.htm	3.789 KB
+File /loadJSON2.html	8.032 KB
+File /loadJson2Style.css	1.856 KB
+File /mode-css.js.gz	5.959 KB
+File /mode-html.js.gz	16.638 KB
+File /mode-javascript.js.gz	6.167 KB
+Dir /myjQuery
+File /myjQuery/jquery-3.5.1.min.js	87.379 KB
+File /websoctest1.htm	2.353 KB
+File /websoctest2.htm	4.111 KB
+File /worker-html.js.gz	48.852 KB
+File system info.
+Total space: 1507328 byte
+Total space used: 364544 byte
+Total free space: 1142784 byte
+{"directory":["File /.exclude.files Filesize 25 B","File /ace.js.gz Filesize 96.624 KB","File /all_in_space.json Filesize 612 B","File /directory.json Filesize 879 B","File /example1.json Filesize 1.148 KB","File /ext-searchbox.js.gz Filesize 3.058 KB","File /favicon.ico Filesize 1.123 KB","File /form.html Filesize 8.438 KB","File /index.htm Filesize 3.789 KB","File /loadJSON2.html Filesize 8.032 KB","File /loadJson2Style.css Filesize 1.856 KB","File /mode-css.js.gz Filesize 5.959 KB","File /mode-html.js.gz Filesize 16.638 KB","File /mode-javascript.js.gz Filesize 6.167 KB","Dir /myjQuery","File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB","File /websoctest1.htm Filesize 2.353 KB","File /websoctest2.htm Filesize 4.111 KB","File /worker-html.js.gz Filesize 48.852 KB","Total space= 1507328 byte","Total space used= 364544 byte","Total free space= 1142784 byte"]}
+refresh directory.json is called!
+11 01:01:00
+WiFi is connected. Free heap: 234624ws[/ws][1] text-message[38]: {"task":"refresh","command":"loaddir"}
+Deserialization succeeded
+deserialized json object is:refresh
+deserialized json object is:loaddir
+File /.exclude.files	25 B
+File /ace.js.gz	96.624 KB
+File /all_in_space.json	612 B
+File /directory.json	876 B
+File /example1.json	1.148 KB
+File /ext-searchbox.js.gz	3.058 KB
+File /favicon.ico	1.123 KB
+File /form.html	8.438 KB
+File /index.htm	3.789 KB
+File /loadJSON2.html	8.032 KB
+File /loadJson2Style.css	1.856 KB
+File /mode-css.js.gz	5.959 KB
+File /mode-html.js.gz	16.638 KB
+File /mode-javascript.js.gz	6.167 KB
+Dir /myjQuery
+File /myjQuery/jquery-3.5.1.min.js	87.379 KB
+File /websoctest1.htm	2.353 KB
+File /websoctest2.htm	4.111 KB
+File /worker-html.js.gz	48.852 KB
+File system info.
+Total space: 1507328 byte
+Total space used: 364544 byte
+Total free space: 1142784 byte
+{"directory":["File /.exclude.files Filesize 25 B","File /ace.js.gz Filesize 96.624 KB","File /all_in_space.json Filesize 612 B","File /directory.json Filesize 876 B","File /example1.json Filesize 1.148 KB","File /ext-searchbox.js.gz Filesize 3.058 KB","File /favicon.ico Filesize 1.123 KB","File /form.html Filesize 8.438 KB","File /index.htm Filesize 3.789 KB","File /loadJSON2.html Filesize 8.032 KB","File /loadJson2Style.css Filesize 1.856 KB","File /mode-css.js.gz Filesize 5.959 KB","File /mode-html.js.gz Filesize 16.638 KB","File /mode-javascript.js.gz Filesize 6.167 KB","Dir /myjQuery","File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB","File /websoctest1.htm Filesize 2.353 KB","File /websoctest2.htm Filesize 4.111 KB","File /worker-html.js.gz Filesize 48.852 KB","Total space= 1507328 byte","Total space used= 364544 byte","Total free space= 1142784 byte"]}
+refresh directory.json is called!
+12 01:01:05
+WiFi is connected. Free heap: 234624ws[/ws][1] text-message[38]: {"task":"refresh","command":"loaddir"}
+Deserialization succeeded
+deserialized json object is:refresh
+deserialized json object is:loaddir
+File /.exclude.files	25 B
+File /ace.js.gz	96.624 KB
+File /all_in_space.json	612 B
+File /directory.json	876 B
+File /example1.json	1.148 KB
+File /ext-searchbox.js.gz	3.058 KB
+File /favicon.ico	1.123 KB
+File /form.html	8.438 KB
+File /index.htm	3.789 KB
+File /loadJSON2.html	8.032 KB
+File /loadJson2Style.css	1.856 KB
+File /mode-css.js.gz	5.959 KB
+File /mode-html.js.gz	16.638 KB
+File /mode-javascript.js.gz	6.167 KB
+Dir /myjQuery
+File /myjQuery/jquery-3.5.1.min.js	87.379 KB
+File /websoctest1.htm	2.353 KB
+File /websoctest2.htm	4.111 KB
+File /worker-html.js.gz	48.852 KB
+File system info.
+Total space: 1507328 byte
+Total space used: 364544 byte
+Total free space: 1142784 byte
+{"directory":["File /.exclude.files Filesize 25 B","File /ace.js.gz Filesize 96.624 KB","File /all_in_space.json Filesize 612 B","File /directory.json Filesize 876 B","File /example1.json Filesize 1.148 KB","File /ext-searchbox.js.gz Filesize 3.058 KB","File /favicon.ico Filesize 1.123 KB","File /form.html Filesize 8.438 KB","File /index.htm Filesize 3.789 KB","File /loadJSON2.html Filesize 8.032 KB","File /loadJson2Style.css Filesize 1.856 KB","File /mode-css.js.gz Filesize 5.959 KB","File /mode-html.js.gz Filesize 16.638 KB","File /mode-javascript.js.gz Filesize 6.167 KB","Dir /myjQuery","File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB","File /websoctest1.htm Filesize 2.353 KB","File /websoctest2.htm Filesize 4.111 KB","File /worker-html.js.gz Filesize 48.852 KB","Total space= 1507328 byte","Total space used= 364544 byte","Total free space= 1142784 byte"]}
+refresh directory.json is called!
+13 01:01:10
+WiFi is connected. Free heap: 23462414 01:01:15
+WiFi is connected. Free heap: 234624ws[/ws][1] text-message[38]: {"task":"refresh","command":"loaddir"}
+Deserialization succeeded
+deserialized json object is:refresh
+deserialized json object is:loaddir
+File /.exclude.files	25 B
+File /ace.js.gz	96.624 KB
+File /all_in_space.json	612 B
+File /directory.json	876 B
+File /example1.json	1.148 KB
+File /ext-searchbox.js.gz	3.058 KB
+File /favicon.ico	1.123 KB
+File /form.html	8.438 KB
+File /index.htm	3.789 KB
+File /loadJSON2.html	8.032 KB
+File /loadJson2Style.css	1.856 KB
+File /mode-css.js.gz	5.959 KB
+File /mode-html.js.gz	16.638 KB
+File /mode-javascript.js.gz	6.167 KB
+Dir /myjQuery
+File /myjQuery/jquery-3.5.1.min.js	87.379 KB
+File /websoctest1.htm	2.353 KB
+File /websoctest2.htm	4.111 KB
+File /worker-html.js.gz	48.852 KB
+File system info.
+Total space: 1507328 byte
+Total space used: 364544 byte
+Total free space: 1142784 byte
+{"directory":["File /.exclude.files Filesize 25 B","File /ace.js.gz Filesize 96.624 KB","File /all_in_space.json Filesize 612 B","File /directory.json Filesize 876 B","File /example1.json Filesize 1.148 KB","File /ext-searchbox.js.gz Filesize 3.058 KB","File /favicon.ico Filesize 1.123 KB","File /form.html Filesize 8.438 KB","File /index.htm Filesize 3.789 KB","File /loadJSON2.html Filesize 8.032 KB","File /loadJson2Style.css Filesize 1.856 KB","File /mode-css.js.gz Filesize 5.959 KB","File /mode-html.js.gz Filesize 16.638 KB","File /mode-javascript.js.gz Filesize 6.167 KB","Dir /myjQuery","File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB","File /websoctest1.htm Filesize 2.353 KB","File /websoctest2.htm Filesize 4.111 KB","File /worker-html.js.gz Filesize 48.852 KB","Total space= 1507328 byte","Total space used= 364544 byte","Total free space= 1142784 byte"]}
+refresh directory.json is called!
+15 01:01:20
+WiFi is connected. Free heap: 234624ws[/ws][1] text-message[32]: {"task":"/","command":"setpath"}
+Deserialization succeeded
+deserialized json object is:/
+deserialized json object is:setpath
+handle websocket Path is: /
+16 01:01:25
+WiFi is connected. Free heap: 23462417 01:01:30
+WiFi is connected. Free heap: 23476018 01:01:35
+WiFi is connected. Free heap: 23476019 01:01:40
+WiFi is connected. Free heap: 234760ws[/ws][1] text-message[34]: {"task":"/my","command":"setpath"}
+Deserialization succeeded
+deserialized json object is:/my
+deserialized json object is:setpath
+handle websocket Path is: /my
+[E][vfs_api.cpp:64] open(): /littlefs/my does not exist
+mkdir bcs does not exists
+mkdir success
+20 01:01:45
+WiFi is connected. Free heap: 23462421 01:01:50
+WiFi is connected. Free heap: 23462422 01:01:55
+WiFi is connected. Free heap: 23476023 01:02:00
+WiFi is connected. Free heap: 234624ws[/ws][1] disconnect
+24 01:02:05
+WiFi is connected. Free heap: 23574825 01:02:10
+WiFi is connected. Free heap: 227328ws[/ws][2] connect
+ws[/ws][2] pong[0]: 
+26 01:02:15
+WiFi is connected. Free heap: 23514427 01:02:20
+WiFi is connected. Free heap: 23528028 01:02:25
+WiFi is connected. Free heap: 23528029 01:02:30
+WiFi is connected. Free heap: 23528030 01:02:35
+WiFi is connected. Free heap: 23528031 01:02:40
+WiFi is connected. Free heap: 23528032 01:02:45
+WiFi is connected. Free heap: 23528033 01:02:50
+WiFi is connected. Free heap: 23528034 01:02:55
+WiFi is connected. Free heap: 23528035 01:03:00
+WiFi is connected. Free heap: 23514436 01:03:05
+WiFi is connected. Free heap: 23528037 01:03:10
+WiFi is connected. Free heap: 23528038 01:03:15
+WiFi is connected. Free heap: 23528039 01:03:20
+WiFi is connected. Free heap: 23528040 01:03:25
+WiFi is connected. Free heap: 23528041 01:03:30
+WiFi is connected. Free heap: 23528042 01:03:35
+WiFi is connected. Free heap: 23528043 01:03:40
+WiFi is connected. Free heap: 23528044 01:03:45
+WiFi is connected. Free heap: 23514445 01:03:50
+WiFi is connected. Free heap: 23528046 01:03:55
+WiFi is connected. Free heap: 23528047 01:04:00
+WiFi is connected. Free heap: 23528048 01:04:05
+WiFi is connected. Free heap: 23528049 01:04:10
+WiFi is connected. Free heap: 23528050 01:04:15
+WiFi is connected. Free heap: 23528051 01:04:20
+WiFi is connected. Free heap: 23528052 01:04:25
+WiFi is connected. Free heap: 23528053 01:04:30
+WiFi is connected. Free heap: 23514454 01:04:35
+WiFi is connected. Free heap: 23528055 01:04:40
+WiFi is connected. Free heap: 23528056 01:04:45
+WiFi is connected. Free heap: 23528057 01:04:50
+WiFi is connected. Free heap: 23528058 01:04:55
+WiFi is connected. Free heap: 23528059 01:05:00
+WiFi is connected. Free heap: 23528060 01:05:05
+WiFi is connected. Free heap: 23356861 01:05:10
+WiFi is connected. Free heap: 23528062 01:05:15
+WiFi is connected. Free heap: 23514463 01:05:20
+WiFi is connected. Free heap: 23528064 01:05:25
+WiFi is connected. Free heap: 23528065 01:05:30
+WiFi is connected. Free heap: 23528066 01:05:35
+WiFi is connected. Free heap: 23528067 01:05:40
+WiFi is connected. Free heap: 23509668 01:05:45
+WiFi is connected. Free heap: 23509669 01:05:50
+WiFi is connected. Free heap: 23509670 01:05:55
+WiFi is connected. Free heap: 23509671 01:06:00
+WiFi is connected. Free heap: 23496072 01:06:05
+WiFi is connected. Free heap: 23509673 01:06:10
+WiFi is connected. Free heap: 23509674 01:06:15
+WiFi is connected. Free heap: 23509675 01:06:20
+WiFi is connected. Free heap: 23509676 01:06:25
+WiFi is connected. Free heap: 23509677 01:06:30
+WiFi is connected. Free heap: 23509678 01:06:35
+WiFi is connected. Free heap: 23509679 01:06:40
+WiFi is connected. Free heap: 235096

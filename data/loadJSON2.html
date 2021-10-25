@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+  <script src="/myjQuery/jquery-3.5.1.min.js"></script>
+  <link href="/loadJson2Style.css" rel="stylesheet">
+  <title>
+    <h1>Request JSON-directory to flexbox</h1>
+  </title>
+</head>
+
+<body>
+  <h2> LITTLEFS ESP32 Fileserver </h2>
+  <div>
+    <div class="flexbox-container">
+      <div class="flexbox-item flexbox-item-1">flexbox-item-1
+        <div class="message">
+		  <h3>File Directory of ESP32 LITTLEFS</h3>
+          <div class="list_dir">
+			<div><ul id="directory"></ul></div><br><br>
+          </div>
+          <div class="refreshtext">
+            refresh the directory here<br><br><br>
+          </div>          
+           <div class="mybutton"> 
+            <a><button class="get-dir-btn" id="get-dir-btn">refresh dir here</button></a>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div class="flexbox-item flexbox-item-2">flexbox-item-2
+			<div class="myupload">
+				<h3>File Upload to ESP32 LITTLEFS</h3>
+				<p> example: / = root ; /myfiles/ = subdirectory "myfiles"
+				<br>if the directory does not exist, it will be created</p>
+				<label for="path">type LITTLEFS path here:</label>
+				<input type="text" id="mypath" name="mypath" value="/"><br><br>
+				<a><button class="set-path-btn" id="set-path-btn">Set the LittleFS path</button></a>
+				<br>
+				<form action="/upload" method="post" enctype="multipart/form-data">
+					<input class="buttons" type="file" name="upload" id="upload" value=""><br>
+					<br><button class="buttons" type="submit">Upload File</button><br>
+				</form>
+			</div>
+			<div class="myremove">
+					<h3>Remove File</h3>
+					<label for="path">type path to remove file here:</label><br><br>
+					<input type="text" id="remove_path" name="remove_path" value="/"><br><br>
+					<a><button class="remove-btn" id="remove-btn">Remove File</button></a>			
+			</div>
+			<div class="mydownload">
+				<h3>Download File to your Computer</h3>
+				<label for="path">type LITTLEFS path here:</label>
+				<input type="text" id="downpath" name="downpath" value="/"><br>
+				<a><button class="down-path-btn" id="down-path-btn">Set the LittleFS path</button></a>
+				<br>
+				<button class="buttons" type="submit">Download File</button><br>			
+			</div>
+			<div class="myrename">
+				<h3>Rename File</h3>
+				<input type="text" id="rename_path" name="rename_path" value="/"><br><br>
+				<a><button class="rename-btn" id="rename-btn">Rename File</button></a>	
+			</div>
+	  </div>
+     </div>
+	</div>
+  <div class="my_output" >
+   <h2>WebSocket Test</h2>
+   <div id = "output"></div>
+   <div id="wsUri"> This is our websocket Uri</div>
+  </div>
+  
+    <script>
+
+
+	  var wsUri = "ws://192.168.86.100/ws"; // websocket address depends on IPaddress of ESP32, 
+											// this fixed URI is overwritten asap the real IP is received by getJSON()
+      var output;
+	  	
+      function init_websocket() {
+         output = document.getElementById("output");
+         testWebSocket();
+      }
+	
+      function testWebSocket() {
+         websocket = new WebSocket(wsUri);
+		
+         websocket.onopen = function(evt) {
+            onOpen(evt)
+         };
+		
+         websocket.onclose = function(evt) {
+            onClose(evt)
+         };
+		
+         websocket.onmessage = function(evt) {
+            onMessage(evt)
+         };
+		
+         websocket.onerror = function(evt) {
+            onError(evt)
+         };
+      }
+	
+      function onOpen(evt) {
+        writeToScreen("CONNECTED");
+		// set the path value		
+		var dataObj = {};
+		dataObj.task = $("#mypath").val();
+		dataObj.command = "setpath";
+		websocket.send(JSON.stringify(dataObj));			// send the path via JSON
+		//alert("I send path: " + obj);
+	  }
+	
+      function onClose(evt) {
+         writeToScreen("DISCONNECTED");
+      }
+	
+      function onMessage(evt) {
+         writeToScreen('<span style = "color: blue;">RESPONSE: ' + 
+            evt.data+'</span>'); //websocket.close();
+		// alert in jQuery
+		websocket.onmessage = function(evt){
+		// alert("I got data: " + evt.data);
+		}
+      }
+	
+      function onError(evt) {
+         writeToScreen('<span style = "color: red;">ERROR:</span> '
+            + evt.data);
+      } 
+	
+      function doSend(message) {
+         writeToScreen("SENT: " + message); websocket.send(message);
+      }
+	
+      function writeToScreen(message) {
+         var pre = document.createElement("p"); 
+         pre.style.wordWrap = "break-word"; 
+         pre.innerHTML = message; 
+         output.appendChild(pre);
+      }
+	
+	  
+
+// document ready function
+$(document).ready(function () {
+
+console.log("vor getwsuri", + wsUri);
+//function get_wsUri()	{							// get websocket Uri from ESP32 server
+	var my_buff = [];						// array to receive wsUri
+		$.getJSON('wsUri.json', function (data) {
+	    console.log(data);
+		$.each(data, function (key, value) {	
+			if (key === 'wsUri') {
+				$('#wsUri').empty();
+				for (var i = 0; i < value.length; i++) {
+					//var option = (value[i]);
+					my_buff[i] = (value[i]);
+				}
+					console.log(my_buff);
+					wsUri = (' ' + my_buff.join('')).slice(1);		// copy the string
+					console.log("aus json ausgelesen" + wsUri);
+					
+					$('#wsUri').append(my_buff.join(''));		// join the array to a string and post it at #wsUri
+					//alert("empfange JSON wsUri?: " + wsUri);
+					console.log("empfange JSON wsUri?: " + wsUri);
+					init_websocket();										// es dauert etwas bis wsUri gelden ist, dadurch wird init() im event nicht berücksichtigt.
+			};
+		});
+	});
+	//return my_buff.join('');
+//};  
+	  //get_wsUri();		// get websocket Uri from ESP32 server
+      //alert("empfange JSON nach get wsUri : " + wsUri);
+	  //console.log("nach getwsuri", wsUri);
+	  
+	  //window.addEventListener("load", init_websocket, false);
+
+	// list dirctory when page is ready into flexbox
+	function my_refreshDir() {
+		var dataObj = {};
+		dataObj.task = "refresh"; 
+		dataObj.command = "loaddir";
+		websocket.send(JSON.stringify(dataObj));			// send the command to refresh directory via JSON
+	};
+	$.getJSON('directory.json', function (data) {
+	  console.log(data);
+
+		$.each(data, function (key, value) {
+			if (key === 'directory') {
+				$('#directory').empty();
+				for (var i = 0; i < value.length; i++) {
+					var option = ('<li>' + value[i] + '</li>');
+					$('#directory').append(option);
+				}
+			}
+		});
+	});
+  // list dirctory on user request
+  $('#get-dir-btn').click(function () {
+	 //alert("get directory clicked!");
+			// set the path value		
+	
+	my_refreshDir();
+    $.getJSON('directory.json', function (data) {
+    //console.log(data);
+		$.each(data, function (key, value) {
+			if (key === 'directory') {
+				$('#directory').empty();
+				for (var i = 0; i < value.length; i++) {
+					var option = ('<li>' + value[i] + '</li>');
+					$('#directory').append(option);
+				}
+			}
+		});
+	//alert("show data JSON!");
+	});
+  });
+  // set LittleFS path on user request
+  $('#set-path-btn').click(function () {
+		//alert("set path clicked!");
+		var mypath = $("#mypath").val();		// get path from <input> value
+        // alert(mypath);
+		// set the path value		
+		var dataObj = {};
+		dataObj.task = mypath; //$("#mypath").val();
+		dataObj.command = "setpath";
+		websocket.send(JSON.stringify(dataObj));					// send the path via JSON
+		localStorage.setItem("myKeypath", JSON.stringify(dataObj));	// store it for later
+		var obj = JSON.parse(localStorage.getItem("myKeypath"));	// access it later
+		// alert("I send upload path: " + obj);
+	});
+	// remove file
+	  $('#remove-btn').click(function () {
+		// alert("remove btn clicked!");
+		var mypath = $("#remove_path").val();		// get path from <input> value
+		// alert(mypath);
+		// set the path value		
+		var dataObj = {};
+		dataObj.task = mypath; 						//$("#remove_path").val();
+		dataObj.command = "removefile";
+		websocket.send(JSON.stringify(dataObj));	// send the path via JSON
+		//alert("I send remove path: ");
+	});
+	
+	
+});
+
+	
+	  
+
+	
+      
+
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>WebSocket Test</title>
+		<script language="javascript" type="text/javascript">
+		var wsUri = 'wss://127.0.0.1:8334/ws';
+		var rpcUser = "rpcuser";
+		var rpcPass = "rpcpass";
+
+		var websocket;
+		var output, connectButton, disconnectButton;
+		var sendButton, rescanButton;
+		var authenticated = false;
+		var messageID = 0;
+
+		function init()
+		{
+			var wsUriInput = document.getElementById("wsUri");
+			var wsUriLink = document.getElementById("wsUriLink");
+			wsUriInput.value = wsUri;
+			wsUriLink.href = wsUri.replace('wss:', 'https:');
+
+			output = document.getElementById("output");
+			connectButton = document.getElementById("connect");
+			disconnectButton = document.getElementById("disconnect");
+			sendButton = document.getElementById("send");
+			rescanButton = document.getElementById("rescan");
+		}
+
+		function connect() {
+			output.innerHTML = '';
+			websocket = new WebSocket(wsUri);
+			websocket.onopen = function(evt) { onOpen(evt) };
+			websocket.onclose = function(evt) { onClose(evt) };
+			websocket.onmessage = function(evt) { onMessage(evt) };
+			websocket.onerror = function(evt) { onError(evt) };
+		}
+
+		function disconnect() {
+			websocket.close();
+		}
+
+		function requestTransactions() {
+			authenticate();
+			doSend('notifynewtransactions', '[]');
+		}
+
+		function rescan() {
+			authenticate();
+			var beginBlock = "00000000504d5fa0ad2cb90af16052a4eb2aea70fa1cba653b90a4583c5193e4";
+			var endBlock = "000000001aeae195809d120b5d66a39c83eb48792e068f8ea1fea19d84a4278a";
+			doSend('rescan', '["'+beginBlock+'", ["1Jksp5A8TrQEgJyL2g9LJ3HtWUBj6cJJz"], [], '+'"'+endBlock+'"]');
+		}
+
+		function onOpen(evt)
+		{
+			connectButton.setAttribute('disabled', 'disabled');
+			disconnectButton.removeAttribute('disabled');
+			sendButton.removeAttribute('disabled');
+			rescanButton.removeAttribute('disabled');
+			writeToScreen("CONNECTED");
+		}
+
+		function onClose(evt)
+		{
+			authenticated = false;
+			writeToScreen("DISCONNECTED");
+			sendButton.setAttribute('disabled', 'disabled');
+			rescanButton.setAttribute('disabled', 'disabled');
+			disconnectButton.setAttribute('disabled', 'disabled');
+			connectButton.removeAttribute('disabled');
+		}
+
+		function onMessage(evt)
+		{
+			writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+		}
+
+		function onError(evt)
+		{
+			writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+		}
+
+		function authenticate() {
+			if (!authenticated) {
+				doSend('authenticate', '["'+rpcUser+'", "'+rpcPass+'"]')
+				authenticated = true;
+			}
+		}
+
+		function doSend(method, params) {
+			message = '{"jsonrpc":"1.0","id":"'+messageID+'","method":"'+method+'","params":'+params+'}';
+			if (method == 'authenticate') {
+				writeToScreen("SENT: " + message.replace(/\"params\":\[.+\]/, '"params":[***]')); 
+			} else {
+				writeToScreen("SENT: " + message); 
+			}
+			websocket.send(message);
+			messageID++;
+		}
+
+		function writeToScreen(message)
+		{
+			var pre = document.createElement("p");
+			pre.style.wordWrap = "break-word";
+			pre.innerHTML = message;
+			output.appendChild(pre);
+		}
+
+		window.addEventListener("load", init, false);
+		</script>
+	</head>
+	<body>
+		<div style="display:block;">
+		<h2>Cert Acceptance</h2>
+		<p>NOTE: Before you connect for the first time, you will need to
+		go <a id="wsUriLink" href="https://127.0.0.1:8334/ws">here</a> to accept
+		the self-signed certificate unless you've already whitelisted
+		it.  Then hit the back button and you should be able to connect.
+		</div>
+		<h2>Btcd WebSocket Test</h2>
+		<strong>Location:</strong>
+		<input id="wsUri" size="35" />
+		<input id="connect" type="button" value="Connect" onClick="connect();" />
+		<input id="disconnect" type="button" value="Disconnect" onClick="disconnect();" disabled="disabled"/>
+		<input id="send" type="button" value="Request Transactions" onClick="requestTransactions();" disabled="disabled"/>
+		<input id="rescan" type="button" value="Rescan" onClick="rescan();" disabled="disabled"/>
+		<div id="output"></div>
+	</body>
+</html> 

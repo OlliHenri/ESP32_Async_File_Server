@@ -1,0 +1,168 @@
+et�[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 0 - WIFI_READY
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 2 - STA_START
+Connecting to WiFi..
+Connecting to WiFi..
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 4 - STA_CONNECTED
+[D][WiFiGeneric.cpp:374] _eventCallback(): Event: 7 - STA_GOT_IP
+[D][WiFiGeneric.cpp:419] _eventCallback(): STA IP: 192.168.86.150, MASK: 255.255.255.0, GW: 192.168.86.1
+Connecting to WiFi..
+192.168.86.150
+[I][ArduinoOTA.cpp:141] begin(): OTA server at: esp-async.local:3232
+LITTLEFS Mounted please send files
+0 01:00:05
+WiFi is connected. Free heap: 2393121 01:00:10
+WiFi is connected. Free heap: 2396042 01:00:15
+WiFi is connected. Free heap: 2385803 01:00:20
+WiFi is connected. Free heap: 238720[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js.gz does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js/index.htm does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js/index.htm.gz does not exist
+NOT_FOUND: GET http://192.168.86.150/myjQuery/jquery-3.5.1.min.js
+_HEADER[Host]: 192.168.86.150
+_HEADER[Connection]: keep-alive
+_HEADER[User-Agent]: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.30
+_HEADER[Accept]: */*
+_HEADER[Referer]: http://192.168.86.150/
+_HEADER[Accept-Encoding]: gzip, deflate
+_HEADER[Accept-Language]: en-US,en;q=0.9,de;q=0.8
+ws[/ws][1] connect
+ws[/ws][1] pong[0]: 
+4 01:00:25
+WiFi is connected. Free heap: 2378765 01:00:30
+WiFi is connected. Free heap: 2380126 01:00:35
+WiFi is connected. Free heap: 2380127 01:00:40
+WiFi is connected. Free heap: 2380128 01:00:45
+WiFi is connected. Free heap: 2380129 01:00:50
+WiFi is connected. Free heap: 238012ws[/ws][1] disconnect
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js.gz does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js/index.htm does not exist
+[E][vfs_api.cpp:64] open(): /littlefs/myjQuery/jquery-3.5.1.min.js/index.htm.gz does not exist
+NOT_FOUND: GET http://192.168.86.150/myjQuery/jquery-3.5.1.min.js
+_HEADER[Host]: 192.168.86.150
+_HEADER[Connection]: keep-alive
+_HEADER[User-Agent]: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.30
+_HEADER[Accept]: */*
+_HEADER[Referer]: http://192.168.86.150/
+_HEADER[Accept-Encoding]: gzip, deflate
+_HEADER[Accept-Language]: en-US,en;q=0.9,de;q=0.8
+ws[/ws][2] connect
+ws[/ws][2] pong[0]: 
+10 01:00:55
+WiFi is connected. Free heap: 23787211 01:01:00
+WiFi is connected. Free heap: 23800812 01:01:05
+WiFi is connected. Free heap: 23800813 01:01:10
+WiFi is connected. Free heap: 23800814 01:01:15
+WiFi is connected. Free heap: 23800815 01:01:20
+WiFi is connected. Free heap: 23800816 01:01:25
+WiFi is connected. Free heap: 23800817 01:01:30
+WiFi is connected. Free heap: 23800818 01:01:35
+WiFi is connected. Free heap: 23800819 01:01:40
+WiFi is connected. Free heap: 23787220 01:01:45
+WiFi is connected. Free heap: 23800821 01:01:50
+WiFi is connected. Free heap: 23800822 01:01:55
+WiFi is connected. Free heap: 23800823 01:02:00
+WiFi is connected. Free heap: 23800824 01:02:05
+WiFi is connected. Free heap: 23800825 01:02:10
+WiFi is connected. Free heap: 23800826 01:02:15
+WiFi is connected. Free heap: 23800827 01:02:20
+WiFi is connected. Free heap: 23800828 01:02:25
+WiFi is connected. Free heap: 23786829 01:02:30
+WiFi is connected. Free heap: 23800830 01:02:35
+WiFi is connected. Free heap: 23800831 01:02:40
+WiFi is connected. Free heap: 23800832 01:02:45
+WiFi is connected. Free heap: 23782433 01:02:50
+WiFi is connected. Free heap: 23782434 01:02:55
+WiFi is connected. Free heap: 23782435 01:03:00
+WiFi is connected. Free heap: 23782436 01:03:05
+WiFi is connected. Free heap: 23782437 01:03:10
+WiFi is connected. Free heap: 23768838 01:03:15
+WiFi is connected. Free heap: 23782439 01:03:20
+WiFi is connected. Free heap: 23782440 01:03:25
+WiFi is connected. Free heap: 23782441 01:03:30
+WiFi is connected. Free heap: 23782442 01:03:35
+WiFi is connected. Free heap: 23782443 01:03:40
+WiFi is connected. Free heap: 23782444 01:03:45
+WiFi is connected. Free heap: 23782445 01:03:50
+WiFi is connected. Free heap: 23782446 01:03:55
+WiFi is connected. Free heap: 23768447 01:04:00
+WiFi is connected. Free heap: 23782448 01:04:05
+WiFi is connected. Free heap: 23782449 01:04:10
+WiFi is connected. Free heap: 23782450 01:04:15
+WiFi is connected. Free heap: 23782451 01:04:20
+WiFi is connected. Free heap: 23766852 01:04:25
+WiFi is connected. Free heap: 23782453 01:04:30
+WiFi is connected. Free heap: 23768454 01:04:35
+WiFi is connected. Free heap: 23782455 01:04:40
+WiFi is connected. Free heap: 23768856 01:04:45
+WiFi is connected. Free heap: 23782457 01:04:50
+WiFi is connected. Free heap: 23782458 01:04:55
+WiFi is connected. Free heap: 23782459 01:05:00
+WiFi is connected. Free heap: 23782460 01:05:05
+WiFi is connected. Free heap: 23768861 01:05:10
+WiFi is connected. Free heap: 23782462 01:05:15
+WiFi is connected. Free heap: 23782463 01:05:20
+WiFi is connected. Free heap: 23782464 01:05:25
+WiFi is connected. Free heap: 23768865 01:05:30
+WiFi is connected. Free heap: 23782466 01:05:35
+WiFi is connected. Free heap: 23782467 01:05:40
+WiFi is connected. Free heap: 23768468 01:05:45
+WiFi is connected. Free heap: 23782469 01:05:50
+WiFi is connected. Free heap: 23611270 01:05:55
+WiFi is connected. Free heap: 23782471 01:06:00
+WiFi is connected. Free heap: 23782472 01:06:05
+WiFi is connected. Free heap: 23782473 01:06:10
+WiFi is connected. Free heap: 23768474 01:06:15
+WiFi is connected. Free heap: 23782475 01:06:20
+WiFi is connected. Free heap: 23782476 01:06:25
+WiFi is connected. Free heap: 23782477 01:06:30
+WiFi is connected. Free heap: 23782478 01:06:35
+WiFi is connected. Free heap: 23782479 01:06:40
+WiFi is connected. Free heap: 23782480 01:06:45
+WiFi is connected. Free heap: 23782481 01:06:50
+WiFi is connected. Free heap: 23782482 01:06:55
+WiFi is connected. Free heap: 23768483 01:07:00
+WiFi is connected. Free heap: 23782484 01:07:05
+WiFi is connected. Free heap: 23782485 01:07:10
+WiFi is connected. Free heap: 23782486 01:07:15
+WiFi is connected. Free heap: 23782487 01:07:20
+WiFi is connected. Free heap: 23782488 01:07:25
+WiFi is connected. Free heap: 23782489 01:07:30
+WiFi is connected. Free heap: 23782490 01:07:35
+WiFi is connected. Free heap: 23782491 01:07:40
+WiFi is connected. Free heap: 23768892 01:07:45
+WiFi is connected. Free heap: 23782493 01:07:50
+WiFi is connected. Free heap: 23782494 01:07:55
+WiFi is connected. Free heap: 23782495 01:08:00
+WiFi is connected. Free heap: 23782496 01:08:05
+WiFi is connected. Free heap: 23782497 01:08:10
+WiFi is connected. Free heap: 23782498 01:08:15
+WiFi is connected. Free heap: 23782499 01:08:20
+WiFi is connected. Free heap: 237824100 01:08:25
+WiFi is connected. Free heap: 237688101 01:08:30
+WiFi is connected. Free heap: 237824102 01:08:35
+WiFi is connected. Free heap: 237824103 01:08:40
+WiFi is connected. Free heap: 237824104 01:08:45
+WiFi is connected. Free heap: 237824105 01:08:50
+WiFi is connected. Free heap: 237824106 01:08:55
+WiFi is connected. Free heap: 237824107 01:09:00
+WiFi is connected. Free heap: 237824108 01:09:05
+WiFi is connected. Free heap: 237824109 01:09:10
+WiFi is connected. Free heap: 237684110 01:09:15
+WiFi is connected. Free heap: 237824111 01:09:20
+WiFi is connected. Free heap: 237824112 01:09:25
+WiFi is connected. Free heap: 237824113 01:09:30
+WiFi is connected. Free heap: 237824114 01:09:35
+WiFi is connected. Free heap: 237824115 01:09:40
+WiFi is connected. Free heap: 237824116 01:09:45
+WiFi is connected. Free heap: 237824117 01:09:50
+WiFi is connected. Free heap: 237824118 01:09:55
+WiFi is connected. Free heap: 237688119 01:10:00
+WiFi is connected. Free heap: 237824120 01:10:05
+WiFi is connected. Free heap: 237824121 01:10:10
+WiFi is connected. Free heap: 237824122 01:10:15
+WiFi is connected. Free heap: 237824123 01:10:20
+WiFi is connected. Free heap: 237824124 01:10:25
+WiFi is connected. Free heap: 236112125 01:10:30
+WiFi is connected. Free heap: 237824126 01:10:35
+WiFi is connected. Free heap: 237824

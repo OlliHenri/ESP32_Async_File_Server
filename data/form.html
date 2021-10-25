@@ -1,0 +1,302 @@
+<!--
+	test program to populate form input fields by using getJSON and JSON strin data
+	
+	problem is that text field are not updated ??
+	
+	-->
+<!--  myJSON = "{\"mqttEnabled\":\"true\",\"Version\":\"ESP32\",\"PE\":\"23\",\"PB\":\"456\",\"totalBanks\":\"2\"}"; --> 
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<style>
+.description {
+  padding-top: 35px;
+  line-height: 24px;
+  font-size: 18px;
+}
+
+<!-- iframe{
+  display: none;
+}  -->
+</style>
+<script src="/myjQuery/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">var XSS_KEY = '%XSS_KEY%';</script>
+<br><br><H1> Form TEST SEITE !</H1>
+</head>
+
+<body>
+
+	<!-- form has iFrame to prevent refresh page at submit , remouve iFrame in 1.form 2.end of HTML 3.CSS-->
+    <form id="form1"  action=""  method="POST" autocomplete="off">		<!--more possible attributes: method="GET" method="POST" action="saventp.json"  for iframe: target="frame"-->
+		<!--<div class="settings">-->
+			<div>
+				<label for="mqttEnabled">Enabled</label>
+				<input type="checkbox" name="mqttEnabled" id="mqttEnabled">
+			</div>
+			<div>			
+				<label for="Version">Platform Version:</label>
+				<input type="text" name="Version" id="Version" value="" readonly=""><br />
+			</div>
+			<div>
+				<label for="PERatio">PE_ratio:</label>		
+				<input type="number" min="-23" max="28" step="1" name="PERatio" id="PERatio" value="0" required=""><br>
+			</div>
+			<div>
+				<label for="Price">Price:</label>
+				<input type="number" min="0" max="550" step="1" name="Price" id="Price" value="0" required=""><br>
+			</div>
+			<div>
+				<label for="totalBanks">Total number of banks</label>
+				<select name="totalBanks" id="totalBanks">
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+				</select>
+			</div>
+		<!--</div>-->
+		<br>
+		
+    </form>
+  <button value="Submit" type="submit" form="form1">Register on Server</button>  <!-- submits form to server -->
+  </br>
+  <input id="btnchangeCheckBox"type="button" value="chngCheckBox"> </br> 
+  </br>
+  <input id="btnserialize" type="button" value="Serialize Form"> </br>
+  </br>
+  <input id="btnserialize2" type="button" value="Serialize Form 2"> </br>
+  </br>
+  <input id="btnListValues" type="button" value="List values"> </br>
+  <input id="btnResetForm" type="button" value="Reset form"> </br>
+  <br> <button id="loadData">Click me to load JSON data</button> </br>  
+    
+  <div id="jsonContent"></div>
+ <!-- <iframe name="frame"></iframe> -->		<!--  iframe -->
+ 
+ <div class="mydiv" name="ajax_success" ID="ajax_success" style="color:blue;"></div>		<!-- used for ajax success message -->
+	
+ <script type="text/javascript">
+        var g1 = null;
+        var g2 = null;
+        var g3 = null;
+    </script>
+
+<script>
+$(function () {
+
+$("#loadData").click(requestData);
+
+function requestData() {
+	
+	//alert("Button clicked");
+	
+	$.getJSON("/myjson", function(data) {
+		//alert("JSON loading");
+		console.log(data);
+		
+		$("#mqttEnabled").prop("checked", data.mqttEnabled);	
+		$("#Version").val(data.Version);
+			console.log('Version: '+data.Version);
+		$("#PERatio").val(data.PE);
+		$("#Price").val(data.PB);
+		$("#totalBanks").val(data.totalBanks);
+			console.log('totalBanks: '+data.totalBanks);
+		
+		// Checkbox alternativ  
+		//$("option[value='10']").attr('selected','selected'); 
+		//$("option[value='10']").prop('selected',true);
+	
+	});//.fail(function () { }
+	//);
+return true;						
+	}
+	
+$("#btnchangeCheckBox").click(function(){
+	//alert("checkBox Button clicked");
+	  var x = document.getElementById("mqttEnabled");
+		
+	  if(x.checked == true) 
+		{x.checked = false;}
+		else
+		{x.checked = true;}
+	});
+	
+	// read form key:value and stringify it to JSON works
+	//$('#form1').on('submit', function(event) {			
+	$("#btnserialize").click(function(){
+		var object = {};
+		var myForm = document.getElementById('form1');
+		console.log('get Element by ID: '+myForm);
+		var formData = new FormData(myForm);
+		formData.forEach((value, key) => {
+			// Reflect.has in favor of: object.hasOwnProperty(key)
+			if(!Reflect.has(object, key)){
+				object[key] = value;
+				return;
+			}
+			if(!Array.isArray(object[key])){
+				object[key] = [object[key]];    
+			}
+			object[key].push(value);
+		});	
+		var json = JSON.stringify(object);
+		console.log('Version: '+json);
+	// POST json  to Server
+		$.ajax({
+		url: '/get',
+		type: 'POST',
+		dataType: 'json',
+		data: JSON.stringify(object),
+		contentType: 'application/json',
+		success: function (json) {
+			$('#ajax_success').html("ajax success to POST");
+		}       
+      });	// end ajax()
+	});	// end btn serialize
+	
+	
+});
+
+</script>
+</body>
+</html>
+<!--
+//$.ajaxSetup({
+//	beforeSend: function (xhr, settings) { settings.data += '&xss=' + XSS_KEY; }
+
+
+
+
+
+// myJSON = "{\"company\":\"myCompany\",\"PE\":\"23\",\"PB\":\"456\"}"; 
+
+  /*          $("#settings").click(function () {
+               
+			   $.getJSON("settings.json",
+                    function (data) {
+
+                       // $("#version").text(data.settings.Version);
+
+                        $("#PERatio").val(data.settings.PE);
+                        $("#Price").val(data.settings.´PB);
+                       $("#NTPZoneMin").val(data.settings.MinutesTimeZone);
+                        $("#NTPDST").prop("checked", data.settings.DST);
+
+                        var d = new Date(1000 * data.settings.now);
+                        $("#timenow").html(d.toJSON());
+
+                        $("#totalBanks").val(data.settings.totalnumberofbanks);
+
+                        if (data.settings.combinationparallel) {
+                            $("#combitype").val("Parallel");
+                        } else {
+                            $("#combitype").val("Serial");
+                        }
+                        $("#banksForm").show();
+                    }).fail(function () { }
+                    );
+
+                return true;
+            });  */
+
+/*
+// processing raw JSON data
+function processRawData(data) {
+  new Promise(resolve => {
+    const companyData = []
+    // creating data array
+    // handling multiple sheets
+    Object.values(data).forEach((sheet, index) => {
+      sheet.forEach((company, i) => {
+        companyData.push({ ...company
+        })
+        // create headings only once
+        if (index === 0 && i === 0) {
+          Object.keys(company).forEach(item => {
+            headings.push(item.trim())
+          })
+        }
+      })
+    })
+    resolve(companyData)
+  })
+}
+
+$(async function() {
+
+  let lists = [];
+
+  function initAutocomplete(list) {
+    const thisKey = 'Company'
+    $("#company").autocomplete('option', 'source', function(request, response) {
+      response(
+        list.filter(item => {
+          if (item[thisKey].toLowerCase().includes(request.term.toLowerCase())) {
+            item.label = item[thisKey]
+            return item
+          }
+        })
+      )
+    })
+  }
+
+  $("#company").autocomplete({
+    minLength: 3,
+    source: lists,
+    focus: function(event, ui) {
+      // the "species" is constant - it shouldn't be modified
+      $("#company").val(ui.item.Company);
+      return false;
+    },
+    select: function(event, ui) {
+      // handling n number of fields / columns
+      headings.forEach(heading => {
+        $('#' + heading).val(ui.item[heading])
+      })
+      return false;
+    }
+  });
+
+  // starting data download, processing and usage
+  getJSON()
+    .then(json => {
+      return processRawData(json)
+    })
+    .then(data => {
+      // just so we see what data we are using
+      console.log(data)
+      // make the processed data accessible globally
+      lists = data
+      initAutocomplete(lists)
+     //commented here initInputs(headings)
+    })
+
+});
+
+// this is how you get values form the form
+document.getElementById('btnListValues').addEventListener('click', function(e) {
+  formGetValues('frm1')
+})
+// this is how you reset the form
+document.getElementById('btnResetForm').addEventListener('click', function(e) {
+  formSetValues('frm1', '')
+})
+
+function formSetValues(formId, val) {
+  const formEl = document.getElementById(formId).elements
+  for (let i = 0; i < formEl.length; i++) {
+    formEl[i].value = val
+  }
+}
+
+function formGetValues(formId) {
+  const formEl = document.getElementById(formId).elements
+  for (let el of formEl) {
+    console.log(el.value)
+  }
+} */
+-->

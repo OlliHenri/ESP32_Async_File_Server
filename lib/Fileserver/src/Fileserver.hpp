@@ -11,7 +11,8 @@
 #include <ArduinoJson.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <LITTLEFSEditor.h>
+//#include <LITTLEFSEditor.h>
+#include <SPIFFSEditor.h>
 #include <FS.h>
 #include <LITTLEFS.h>
 #include <AsyncUDP.h>

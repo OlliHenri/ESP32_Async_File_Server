@@ -1,0 +1,28 @@
+{"directory":[
+      "Dir /BMSfiles",
+      "File /BMSfiles/default.html Filesize 36.486 KB",
+      "File /BMSfiles/echarts.min.js Filesize 759.641 KB",
+      "File /BMSfiles/logo.png Filesize 8.268 KB",
+      "File /BMSfiles/pagecode.js Filesize 20.701 KB",
+      "File /BMSfiles/style.css Filesize 4.503 KB",
+      "File /BMSfiles/wait.png Filesize 51.652 KB",
+      "File /append.html Filesize 1017 B",
+      "File /example.json Filesize 376 B",
+      "File /example1.json Filesize 1014 B",
+      "File /form.html Filesize 8.438 KB",
+      "File /form2.html Filesize 5.484 KB",
+      "File /loadJSON.html Filesize 1.430 KB",
+      "File /loadJSON2.html Filesize 3.605 KB",
+      "File /loadJson2Style.css Filesize 1.875 KB",
+      "Dir /myWeb",
+      "File /myWeb/index.html Filesize 505 B",
+      "File /myappend.json Filesize 30 B",
+      "Dir /mydir",
+      "File /mydir/hello2.txt Filesize 6 B",
+      "Dir /myjQuery",
+      "File /myjQuery/index.html Filesize 390 B",
+      "File /myjQuery/jquery-3.5.1.min.js Filesize 87.379 KB",
+      "File /myjQuery/result.json Filesize 74 B",
+      "File /myjQuery/table.html Filesize 996 B"
+   ]
+}
